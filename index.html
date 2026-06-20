@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>우리 가족 스마트 홈</title>
+  <!-- Tailwind CSS & Lucide Icons CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const defaultApps = [
+      {
+        id: 'space-timer',
+        title: '우주 초스피드 레이서',
+        subtitle: '스피드 랩 타임 타이머',
+        description: '실시간 마이크 연동 및 음성 명령을 감지하여 비행하는 타이머입니다.',
+        url: 'https://luckydyu.github.io/space-timer',
+        github: 'https://github.com/luckydyu/space-timer',
+        icon: 'rocket',
+        themeColor: 'from-blue-500 to-indigo-600'
+      },
+      {
+        id: 'cosmic-timer',
+        title: '코스믹 퀴즈 가디언',
+        subtitle: '어린이 안심 집중 타이머',
+        description: '캐릭터 로켓과 우주 괴물을 골라 집중을 유도하는 타이머입니다.',
+        url: 'https://luckydyu.github.io/cosmic-timer',
+        github: 'https://github.com/luckydyu/cosmic-timer',
+        icon: 'compass',
+        themeColor: 'from-cyan-400 to-teal-500'
+      },
+      {
+        id: 'math-planner',
+        title: '수력발전소 수학 플래너',
+        subtitle: '연산 학습 자동 스케줄러',
+        description: '중학 과정부터 고등 미적분까지 하루 진도표를 자동 배정해줍니다.',
+        url: 'https://luckydyu.github.io/math-planner',
+        github: 'https://github.com/luckydyu/math-planner',
+        icon: 'book',
+        themeColor: 'from-emerald-400 to-green-600'
+      },
+      {
+        id: 'paris-trip-app',
+        title: '파리 여행 스마트 비서',
+        subtitle: '가족 공유 가이드북',
+        description: '항공 일지, 환율 계산기, 실시간 불어 TTS 발음 재생기 기능이 포함되어 있습니다.',
+        url: 'https://luckydyu.github.io/paris-trip-app',
+        github: 'https://github.com/luckydyu/paris-trip-app',
+        icon: 'plane',
+        themeColor: 'from-rose-400 to-orange-500'
+      }
+    ];
+
+    function App() {
+      const [searchQuery, setSearchQuery] = useState('');
+      const [favorites, setFavorites] = useState(() => {
+        const saved = localStorage.getItem('family_portal_favorites_v3');
+        return saved ? JSON.parse(saved) : [];
+      });
+
+      useEffect(() => {
+        localStorage.setItem('family_portal_favorites_v3', JSON.stringify(favorites));
+      }, [favorites]);
+
+      useEffect(() => {
+        // Lucide Icons 활성화
+        lucide.createIcons();
+      }, [favorites, searchQuery]);
+
+      const toggleFavorite = (e, id) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (favorites.includes(id)) {
+          setFavorites(favorites.filter(favId => favId !== id));
+        } else {
+          setFavorites([...favorites, id]);
+        }
+      };
+
+      const filteredApps = defaultApps.filter(app => {
+        return app.title.includes(searchQuery) || app.subtitle.includes(searchQuery);
+      });
+
+      const favoriteApps = filteredApps.filter(app => favorites.includes(app.id));
+      const remainingApps = filteredApps.filter(app => !favorites.includes(app.id));
+
+      return (
+        <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col justify-between">
+          <div className="h-1.5 w-full bg-gradient-to-r from-teal-400 via-indigo-400 to-rose-400" />
+          
+          <header className="border-b border-slate-200 bg-white/90 sticky top-0 z-30">
+            <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-slate-900 text-white shadow-sm">
+                  <i data-lucide="layers" class="w-4.5 h-4.5"></i>
+                </div>
+                <div>
+                  <h1 className="text-sm font-extrabold text-slate-900">우리 가족 스마트 홈</h1>
+                  <p className="text-[11px] text-slate-400 hidden sm:block">매일의 일상을 편리하게 만드는 생활 도구 모음</p>
+                </div>
+              </div>
+              <div className="text-[11px] text-slate-400 font-semibold tracking-wider">PORTAL v3.0</div>
+            </div>
+          </header>
+
+          <main className="max-w-6xl mx-auto px-4 py-10 space-y-8 flex-grow w-full">
+            <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+              <div>
+                <h2 className="text-xl font-extrabold text-slate-900">반가워요! 어떤 스마트 도구로 바로 갈까요?</h2>
+                <p className="text-xs text-slate-500 mt-1">도구 아이콘을 탭하면 즉시 실행됩니다. 별을 눌러 최상단에 고정해보세요.</p>
+              </div>
+              <div className="relative w-full md:w-72">
+                <input 
+                  type="text" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="도구 검색..." 
+                  className="w-full pl-4 pr-3 py-2 text-xs rounded-lg border border-slate-200 bg-white text-slate-800 shadow-3xs"
+                />
+              </div>
+            </div>
+
+            {favoriteApps.length > 0 && (
+              <div className="space-y-3">
+                <h3 className="text-xs font-bold text-indigo-600 tracking-wider uppercase flex items-center gap-1">⭐ 자주 쓰는 도구</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {favoriteApps.map(app => (
+                    <a key={app.id} href={app.url} target="_blank" className="relative flex flex-col items-center text-center p-5 bg-white rounded-2xl border-2 border-indigo-100 hover:border-indigo-300 transition-all duration-200 min-h-[175px]">
+                      <button onClick={(e) => toggleFavorite(e, app.id)} class="absolute top-3 right-3 p-1 rounded-md bg-slate-50"><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i></button>
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${app.themeColor} text-white flex items-center justify-center`}><i data-lucide={app.icon}></i></div>
+                      <div className="mt-3.5 space-y-1 w-full">
+                        <h4 className="text-xs font-bold text-slate-900">{app.title}</h4>
+                        <p className="text-[10px] text-slate-400 truncate">{app.subtitle}</p>
+                        <p className="text-[10px] text-slate-400 leading-normal line-clamp-2 mt-1.5">{app.description}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3 pt-2">
+              {favoriteApps.length > 0 && <h3 className="text-xs font-bold text-slate-400 tracking-wider uppercase">전체 목록</h3>}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {remainingApps.map(app => (
+                  <a key={app.id} href={app.url} target="_blank" className="relative flex flex-col items-center text-center p-5 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 transition-all duration-200 min-h-[175px]">
+                    <button onClick={(e) => toggleFavorite(e, app.id)} class="absolute top-3 right-3 p-1 rounded-md bg-slate-50"><i data-lucide="star" class="w-3.5 h-3.5 text-slate-300"></i></button>
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${app.themeColor} text-white flex items-center justify-center`}><i data-lucide={app.icon}></i></div>
+                    <div className="mt-3.5 space-y-1 w-full">
+                      <h4 className="text-xs font-bold text-slate-900">{app.title}</h4>
+                      <p className="text-[10px] text-slate-400 truncate">{app.subtitle}</p>
+                      <p className="text-[10px] text-slate-400 leading-normal line-clamp-2 mt-1.5">{app.description}</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </main>
+
+          <footer className="border-t border-slate-200/60 py-6 text-center text-[11px] bg-white text-slate-400">
+            <p>우리 가족만을 위한 스마트 스페이스 홈 센터</p>
+          </footer>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
