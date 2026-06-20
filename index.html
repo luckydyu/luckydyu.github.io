@@ -4,36 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>우리 가족 스마트 홈</title>
-  <!-- Tailwind CSS & Lucide Icons CDN -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- React & ReactDOM CDN -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- React & ReactDOM CDN (안정화 버전) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+  <!-- 크래시가 해결된 고정 버전의 Babel Standalone CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.10/babel.min.js" crossorigin></script>
+  
+  <style>
+    /* 폰트 및 모바일 터치 최적화 */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
   <div id="root"></div>
 
-  <script type="text/babel">
+  <!-- data-presets를 명시하여 모듈 방식 컴파일 오류를 원천 차단합니다 -->
+  <script type="text/babel" data-presets="react,env">
     const { useState, useEffect } = React;
 
+    // 우리 가족용 스마트 앱 4종 데이터베이스
     const defaultApps = [
       {
         id: 'space-timer',
         title: '우주 초스피드 레이서',
         subtitle: '스피드 랩 타임 타이머',
-        description: '실시간 마이크 연동 및 음성 명령을 감지하여 비행하는 타이머입니다.',
+        description: '말소리와 음성 명령을 감지하여 비행하는 스피드 학습용 타이머입니다.',
         url: 'https://luckydyu.github.io/space-timer',
         github: 'https://github.com/luckydyu/space-timer',
         icon: 'rocket',
-        themeColor: 'from-blue-500 to-indigo-600'
+        themeColor: 'from-indigo-500 to-blue-600'
       },
       {
         id: 'cosmic-timer',
         title: '코스믹 퀴즈 가디언',
-        subtitle: '어린이 안심 집중 타이머',
-        description: '캐릭터 로켓과 우주 괴물을 골라 집중을 유도하는 타이머입니다.',
+        subtitle: '집중 안심 타이머',
+        description: '영웅 로켓과 우주 괴물을 골라 스스로의 문제 풀이에 집중하도록 돕는 도구입니다.',
         url: 'https://luckydyu.github.io/cosmic-timer',
         github: 'https://github.com/luckydyu/cosmic-timer',
         icon: 'compass',
@@ -42,8 +52,8 @@
       {
         id: 'math-planner',
         title: '수력발전소 수학 플래너',
-        subtitle: '연산 학습 자동 스케줄러',
-        description: '중학 과정부터 고등 미적분까지 하루 진도표를 자동 배정해줍니다.',
+        subtitle: '매일매일 수학 스케줄러',
+        description: '중등 과정부터 고등 미적분까지 하루 문제 풀이 계획을 자동으로 배정해줍니다.',
         url: 'https://luckydyu.github.io/math-planner',
         github: 'https://github.com/luckydyu/math-planner',
         icon: 'book',
@@ -52,8 +62,8 @@
       {
         id: 'paris-trip-app',
         title: '파리 여행 스마트 비서',
-        subtitle: '가족 공유 가이드북',
-        description: '항공 일지, 환율 계산기, 실시간 불어 TTS 발음 재생기 기능이 포함되어 있습니다.',
+        subtitle: '우리가족 프랑스 가이드북',
+        description: '실시간 여행 일정 확인, 환율 계산기, 프랑스어 자동 발음기가 탑재되어 있습니다.',
         url: 'https://luckydyu.github.io/paris-trip-app',
         github: 'https://github.com/luckydyu/paris-trip-app',
         icon: 'plane',
@@ -61,22 +71,62 @@
       }
     ];
 
+    // 외부 스크립트 충돌 없이 브라우저에 바로 그려지는 인라인 벡터 그래픽스 정의
+    const IconRocket = () => (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 0l-1.15-.65a1 1 0 00-1 .07L5.76 15.1a1 1 0 00-.23 1.29l1.72 2.76a1 1 0 001.38.31l1.5-1a1 1 0 00.32-1.22l-.18-.4a6 6 0 010-5.84M17 11a5 5 0 01-5 5v-5M17 11V7a2 2 0 00-2-2h-3a5 5 0 00-5 5v4m10-3h1" />
+      </svg>
+    );
+
+    const IconCompass = () => (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l-.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+      </svg>
+    );
+
+    const IconBook = () => (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+    );
+
+    const IconPlane = () => (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+      </svg>
+    );
+
+    const IconPortal = () => (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+    );
+
+    const IconSearch = () => (
+      <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    );
+
+    const StarIcon = ({ filled }) => (
+      <svg className={`w-4 h-4 ${filled ? 'fill-amber-400 text-amber-400' : 'text-slate-300 hover:text-slate-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.36.124 1.36.97 0 .34-.105.674-.3.97l-3.97 2.885a1 1 0 00-.364 1.118l1.52 4.674c.3.922-.755 1.688-1.538 1.118l-3.97-2.885a1 1 0 00-1.175 0l-3.97 2.885c-.783.57-1.838-.197-1.538-1.118l1.52-4.674a1 1 0 00-.364-1.118L2.05 10.23a1.005 1.000 0 01-.3-1.076c.105-.34.3-.67.63-.67h4.907a1 1 0 00.95-.69l1.519-4.674z" />
+      </svg>
+    );
+
     function App() {
       const [searchQuery, setSearchQuery] = useState('');
       const [favorites, setFavorites] = useState(() => {
-        const saved = localStorage.getItem('family_portal_favorites_v3');
+        const saved = localStorage.getItem('family_portal_favorites_v4');
         return saved ? JSON.parse(saved) : [];
       });
 
+      // 즐겨찾기 목록 영구보존 동기화
       useEffect(() => {
-        localStorage.setItem('family_portal_favorites_v3', JSON.stringify(favorites));
+        localStorage.setItem('family_portal_favorites_v4', JSON.stringify(favorites));
       }, [favorites]);
 
-      useEffect(() => {
-        // Lucide Icons 활성화
-        lucide.createIcons();
-      }, [favorites, searchQuery]);
-
+      // 즐겨찾기 추가/해제 핸들러
       const toggleFavorite = (e, id) => {
         e.preventDefault();
         e.stopPropagation();
@@ -87,61 +137,119 @@
         }
       };
 
+      // 도구 전용 어울림 아이콘 매핑
+      const renderAppIcon = (iconName) => {
+        switch(iconName) {
+          case 'rocket': return <IconRocket />;
+          case 'compass': return <IconCompass />;
+          case 'book': return <IconBook />;
+          case 'plane': return <IconPlane />;
+          default: return <IconPortal />;
+        }
+      };
+
+      // 입력한 검색어로 도구 필터링
       const filteredApps = defaultApps.filter(app => {
-        return app.title.includes(searchQuery) || app.subtitle.includes(searchQuery);
+        return app.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+               app.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               app.description.toLowerCase().includes(searchQuery.toLowerCase());
       });
 
+      // 즐겨찾기(첫째줄)와 일반 도구 리스트 분할
       const favoriteApps = filteredApps.filter(app => favorites.includes(app.id));
       const remainingApps = filteredApps.filter(app => !favorites.includes(app.id));
 
       return (
-        <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col justify-between">
-          <div className="h-1.5 w-full bg-gradient-to-r from-teal-400 via-indigo-400 to-rose-400" />
+        <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col justify-between antialiased">
           
-          <header className="border-b border-slate-200 bg-white/90 sticky top-0 z-30">
+          {/* 상단 포인트 그라데이션 장식 라인 */}
+          <div className="h-1.5 w-full bg-gradient-to-r from-teal-400 via-indigo-400 to-rose-400" />
+
+          {}
+          {/* 헤더 (사용자 친화적 디자인) */}
+          <header className="border-b border-slate-200 bg-white sticky top-0 z-30 shadow-xs">
             <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-slate-900 text-white shadow-sm">
-                  <i data-lucide="layers" class="w-4.5 h-4.5"></i>
+              <div className="flex items-center gap-2.5">
+                <div className="p-2.5 rounded-xl bg-slate-900 text-white shadow-sm flex items-center justify-center">
+                  <IconPortal />
                 </div>
                 <div>
-                  <h1 className="text-sm font-extrabold text-slate-900">우리 가족 스마트 홈</h1>
-                  <p className="text-[11px] text-slate-400 hidden sm:block">매일의 일상을 편리하게 만드는 생활 도구 모음</p>
+                  <h1 className="text-base font-bold text-slate-900">우리 가족 스마트 홈</h1>
+                  <p className="text-xs text-slate-400 hidden sm:block">가족들이 매일 사용하는 편리한 생활 도구 모음</p>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-400 font-semibold tracking-wider">PORTAL v3.0</div>
+              <div className="text-[10px] text-slate-400 font-extrabold tracking-wider bg-slate-100 px-2 py-1 rounded">PORTAL v3.1</div>
             </div>
           </header>
 
-          <main className="max-w-6xl mx-auto px-4 py-10 space-y-8 flex-grow w-full">
+          {}
+          {/* 메인 레이아웃 구성 */}
+          <main className="max-w-6xl mx-auto px-4 py-8 space-y-8 flex-grow w-full">
+            
+            {/* 타이틀 및 콤팩트 검색바 */}
             <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
               <div>
-                <h2 className="text-xl font-extrabold text-slate-900">반가워요! 어떤 스마트 도구로 바로 갈까요?</h2>
-                <p className="text-xs text-slate-500 mt-1">도구 아이콘을 탭하면 즉시 실행됩니다. 별을 눌러 최상단에 고정해보세요.</p>
+                <h2 className="text-xl font-extrabold tracking-tight text-slate-900">어떤 도구로 바로 갈까요?</h2>
+                <p className="text-xs text-slate-500 mt-1">도구를 선택하면 바로 연결됩니다. 자주 쓰는 앱은 별(⭐)을 눌러 상단에 고정해 보세요.</p>
               </div>
-              <div className="relative w-full md:w-72">
+              
+              {/* 단순화된 검색바 */}
+              <div className="relative w-full md:w-64">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                  <IconSearch />
+                </div>
                 <input 
                   type="text" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="도구 검색..." 
-                  className="w-full pl-4 pr-3 py-2 text-xs rounded-lg border border-slate-200 bg-white text-slate-800 shadow-3xs"
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-200 bg-white text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 font-medium"
                 />
               </div>
             </div>
 
+            {}
+            {/* [1] 즐겨찾기 목록 (첫 줄 고정 배치 - 데스크톱 기준 5열) */}
             {favoriteApps.length > 0 && (
               <div className="space-y-3">
-                <h3 className="text-xs font-bold text-indigo-600 tracking-wider uppercase flex items-center gap-1">⭐ 자주 쓰는 도구</h3>
+                <h3 className="text-xs font-bold text-indigo-600 tracking-wider uppercase flex items-center gap-1.5 pl-1">
+                  <span className="text-amber-500">⭐</span> 자주 쓰는 도구
+                </h3>
+                
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   {favoriteApps.map(app => (
-                    <a key={app.id} href={app.url} target="_blank" className="relative flex flex-col items-center text-center p-5 bg-white rounded-2xl border-2 border-indigo-100 hover:border-indigo-300 transition-all duration-200 min-h-[175px]">
-                      <button onClick={(e) => toggleFavorite(e, app.id)} class="absolute top-3 right-3 p-1 rounded-md bg-slate-50"><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i></button>
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${app.themeColor} text-white flex items-center justify-center`}><i data-lucide={app.icon}></i></div>
-                      <div className="mt-3.5 space-y-1 w-full">
-                        <h4 className="text-xs font-bold text-slate-900">{app.title}</h4>
-                        <p className="text-[10px] text-slate-400 truncate">{app.subtitle}</p>
-                        <p className="text-[10px] text-slate-400 leading-normal line-clamp-2 mt-1.5">{app.description}</p>
+                    <a 
+                      key={app.id} 
+                      href={app.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="group relative flex flex-col items-center text-center p-5 bg-white rounded-2xl border-2 border-indigo-100 hover:border-indigo-300 hover:-translate-y-1 shadow-xs hover:shadow-md transition-all duration-200 min-h-[180px]"
+                    >
+                      {/* 고유 핀 버튼 */}
+                      <button 
+                        onClick={(e) => toggleFavorite(e, app.id)} 
+                        className="absolute top-3 right-3 p-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors z-10"
+                        title="즐겨찾기 해제"
+                      >
+                        <StarIcon filled={true} />
+                      </button>
+
+                      {/* 그래디언트 원형 백그라운드 아이콘 */}
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${app.themeColor} text-white flex items-center justify-center shadow-md`}>
+                        {renderAppIcon(app.icon)}
+                      </div>
+
+                      {/* 도구 텍스트 정보 */}
+                      <div className="mt-4 space-y-1 w-full">
+                        <h4 className="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
+                          {app.title}
+                        </h4>
+                        <p className="text-[10px] text-slate-400 font-medium truncate">
+                          {app.subtitle}
+                        </p>
+                        <p className="text-[10px] text-slate-400 font-medium leading-relaxed line-clamp-2 px-1 mt-2 text-center">
+                          {app.description}
+                        </p>
                       </div>
                     </a>
                   ))}
@@ -149,31 +257,80 @@
               </div>
             )}
 
+            {}
+            {/* [2] 전체 도구 목록 (5열 배치) */}
             <div className="space-y-3 pt-2">
-              {favoriteApps.length > 0 && <h3 className="text-xs font-bold text-slate-400 tracking-wider uppercase">전체 목록</h3>}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {remainingApps.map(app => (
-                  <a key={app.id} href={app.url} target="_blank" className="relative flex flex-col items-center text-center p-5 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 transition-all duration-200 min-h-[175px]">
-                    <button onClick={(e) => toggleFavorite(e, app.id)} class="absolute top-3 right-3 p-1 rounded-md bg-slate-50"><i data-lucide="star" class="w-3.5 h-3.5 text-slate-300"></i></button>
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${app.themeColor} text-white flex items-center justify-center`}><i data-lucide={app.icon}></i></div>
-                    <div className="mt-3.5 space-y-1 w-full">
-                      <h4 className="text-xs font-bold text-slate-900">{app.title}</h4>
-                      <p className="text-[10px] text-slate-400 truncate">{app.subtitle}</p>
-                      <p className="text-[10px] text-slate-400 leading-normal line-clamp-2 mt-1.5">{app.description}</p>
-                    </div>
-                  </a>
-                ))}
-              </div>
+              {favoriteApps.length > 0 && (
+                <h3 className="text-xs font-bold text-slate-400 tracking-wider uppercase pl-1">
+                  전체 도구 목록
+                </h3>
+              )}
+              
+              {remainingApps.length === 0 && favoriteApps.length === 0 ? (
+                <div className="text-center py-16 rounded-2xl border-2 border-dashed border-slate-200 bg-white">
+                  <div className="text-slate-300 flex justify-center mb-2">
+                    <IconPortal />
+                  </div>
+                  <p className="text-xs font-bold text-slate-400">등록된 스마트 도구를 찾지 못했습니다.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {remainingApps.map(app => (
+                    <a 
+                      key={app.id} 
+                      href={app.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="group relative flex flex-col items-center text-center p-5 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 hover:-translate-y-1 shadow-xs hover:shadow-md transition-all duration-200 min-h-[180px]"
+                    >
+                      {/* 고유 핀 버튼 */}
+                      <button 
+                        onClick={(e) => toggleFavorite(e, app.id)} 
+                        className="absolute top-3 right-3 p-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors z-10"
+                        title="즐겨찾기 추가"
+                      >
+                        <StarIcon filled={false} />
+                      </button>
+
+                      {/* 그래디언트 원형 백그라운드 아이콘 */}
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${app.themeColor} text-white flex items-center justify-center shadow-sm opacity-90 group-hover:opacity-100 transition-opacity`}>
+                        {renderAppIcon(app.icon)}
+                      </div>
+
+                      {/* 도구 텍스트 정보 */}
+                      <div className="mt-4 space-y-1 w-full">
+                        <h4 className="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
+                          {app.title}
+                        </h4>
+                        <p className="text-[10px] text-slate-400 font-medium truncate">
+                          {app.subtitle}
+                        </p>
+                        <p className="text-[10px] text-slate-400 font-medium leading-relaxed line-clamp-2 px-1 mt-2 text-center">
+                          {app.description}
+                        </p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
+
           </main>
 
-          <footer className="border-t border-slate-200/60 py-6 text-center text-[11px] bg-white text-slate-400">
-            <p>우리 가족만을 위한 스마트 스페이스 홈 센터</p>
+          {}
+          {/* 푸터 영역 */}
+          <footer className="border-t border-slate-200/60 py-8 text-center text-xs bg-white text-slate-400">
+            <div className="max-w-6xl mx-auto px-4 space-y-1">
+              <p className="font-semibold text-slate-500">우리 가족만을 위한 스마트 스페이스 홈 센터</p>
+              <p className="text-[10px] opacity-75">All resources hosted on private cloud workspace.</p>
+            </div>
           </footer>
+
         </div>
       );
     }
 
+    // 마운트 진행
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
