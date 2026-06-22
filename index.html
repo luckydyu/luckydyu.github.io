@@ -125,6 +125,7 @@
     );
 
     function App() {
+      const homeUrl = 'https://luckydyu.github.io/';
       const [searchQuery, setSearchQuery] = useState('');
       const [favorites, setFavorites] = useState(() => {
         const saved = localStorage.getItem('family_portal_favorites_v4');
@@ -188,7 +189,17 @@
                   <p className="text-xs text-slate-400 hidden sm:block">가족들이 매일 사용하는 편리한 생활 도구 모음</p>
                 </div>
               </div>
-              <div className="text-[10px] text-slate-400 font-extrabold tracking-wider bg-slate-100 px-2 py-1 rounded">PORTAL v3.1</div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={homeUrl}
+                  className="p-2.5 rounded-xl bg-slate-900 text-white shadow-sm flex items-center justify-center hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition-colors"
+                  aria-label="스마트 홈으로 이동"
+                  title="스마트 홈으로 이동"
+                >
+                  <IconPortal />
+                </a>
+                <div className="text-[10px] text-slate-400 font-extrabold tracking-wider bg-slate-100 px-2 py-1 rounded">PORTAL v3.1</div>
+              </div>
             </div>
           </header>
 
